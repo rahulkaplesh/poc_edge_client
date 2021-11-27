@@ -7,15 +7,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'self-discovery-edge-server'",
+            "name": "Debug executable 'poc_edge_client'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=self-discovery-edge-server",
-                    "--package=self-discovery-edge-server"
+                    "--bin=poc_edge_client",
+                    "--package=poc_edge_client"
                 ],
                 "filter": {
-                    "name": "self-discovery-edge-server",
+                    "name": "poc_edge_client",
                     "kind": "bin"
                 }
             },
@@ -25,16 +25,16 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'self-discovery-edge-server'",
+            "name": "Debug unit tests in executable 'poc_edge_client'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=self-discovery-edge-server",
-                    "--package=self-discovery-edge-server"
+                    "--bin=poc_edge_client",
+                    "--package=poc_edge_client"
                 ],
                 "filter": {
-                    "name": "self-discovery-edge-server",
+                    "name": "poc_edge_client",
                     "kind": "bin"
                 }
             },
