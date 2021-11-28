@@ -2,19 +2,47 @@ mod common;
 mod client;
 use chrono;
 use std::{thread, time};
+use clap::{App, Arg};
 
 fn main() {
-    println!("Hello, world!");
-    let temp_client = client::Client::new("Sample-1");
-    match temp_client {
-        Ok(temp) => {
-            loop {
-                let temp = Some(temp.clone());
-                let dt: chrono::DateTime<chrono::Local> = chrono::offset::Local::now();
-                temp.unwrap().send_data(dt.to_string().as_str());
-                thread::sleep(time::Duration::from_secs(10));
+    let matches = App::new("Edge Client")
+        .version("1.0")
+        .author("Rahul Kaplesh <rahulkaplesh@gmail.com")
+        .about("an edge client")
+        .arg( 
+            Arg::with_name("address")
+                .short("a")
+                .long("address")
+                .value_name("String")
+                .help("Takes an address")
+                .takes_value(true),
+        ).arg(
+            Arg::with_name("name")
+                .short("n")
+                .long("name")
+                .value_name("String")
+                .help("Takes an name")
+                .takes_value(true),
+        ).get_matches();
+    if let Some(client_name) = matches.value_of("name") {
+        if let Some(server_address) = matches.value_of("address") {
+            let temp_client = client::Client::new(client_name, server_address);
+            match temp_client {
+                Ok(temp) => {
+                    loop {
+                        let temp = Some(temp.clone());
+                        let dt: chrono::DateTime<chrono::Local> = chrono::offset::Local::now();
+                        temp.unwrap().send_data(dt.to_string().as_str());
+                        thread::sleep(time::Duration::from_secs(10));
+                    }
+                },
+                Err(err) => println!("Cannot Instantiate Client: {}", err),
             }
-        },
-        Err(err) => println!("Cannot Instantiate Client: {}", err),
-    }    
+        } else {
+            println!("Enter the server address you want to connect to!!");
+        }
+    } else {
+        println!("Enter the name of the client!!");
+    }
+        
 }

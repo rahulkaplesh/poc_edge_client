@@ -13,10 +13,9 @@ pub struct Client {
 }
 
 impl Client {
-    pub fn new(name: &str) -> io::Result<Client> {
+    pub fn new(name: &str, discovery_endpoint: &str) -> io::Result<Client> {
         let (handler, node_listener) = node::split();
-        let server_endpoint = "127.0.0.1:5000"; // Connection to the discovery server.
-        let (endpoint, address) = handler.network().connect(Transport::FramedTcp, server_endpoint)?;
+        let (endpoint, address) = handler.network().connect(Transport::FramedTcp, discovery_endpoint)?;
         let message = Message::RegisterClient(name.to_string().clone(), address);
         let output_data = bincode::serialize(&message).unwrap();
         handler.network().send(endpoint, &output_data);
