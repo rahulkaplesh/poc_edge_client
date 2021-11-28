@@ -32,3 +32,11 @@ impl Client {
         self.handler.network().send(self.server_endpoint, &output_data);
     }
 }
+
+impl Drop for Client {
+    fn drop(&mut self) {
+        let message = Message::UnregisterClient(self.name.to_string().clone());
+        let output_data = bincode::serialize(&message).unwrap();
+        self.handler.network().send(self.server_endpoint, &output_data);
+    }
+}
