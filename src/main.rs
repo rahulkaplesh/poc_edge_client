@@ -1,10 +1,21 @@
 mod common;
 mod client;
 use chrono;
-use std::{thread, time};
+use std::{process, sync::{Arc, atomic::{AtomicUsize, Ordering}}, thread, time};
 use clap::{App, Arg};
+use ctrlc;
 
 fn main() {
+    let running = Arc::new(AtomicUsize::new(0));
+    let r = running.clone();
+    ctrlc::set_handler(move || {
+        let prev = r.fetch_add(1, Ordering::SeqCst);
+        if prev == 0 {
+            println!("Exiting...");
+        } else {
+            process::exit(0);
+        }
+    }).expect("Error setting Ctrl-C handler");
     let matches = App::new("Edge Client")
         .version("1.0")
         .author("Rahul Kaplesh <rahulkaplesh@gmail.com")
@@ -30,6 +41,9 @@ fn main() {
             match temp_client {
                 Ok(temp) => {
                     loop {
+                        if running.load(Ordering::SeqCst) > 0 {
+                            break;
+                        }
                         let temp = Some(temp.clone());
                         let dt: chrono::DateTime<chrono::Local> = chrono::offset::Local::now();
                         temp.unwrap().send_data(dt.to_string().as_str());

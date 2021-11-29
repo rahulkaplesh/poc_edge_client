@@ -11,3 +11,4 @@ serde = "1.0"
 bincode = "1.3"
 chrono = "0.4.19"
 clap = { version = "2.33.3"}
+ctrlc = { version = "3.0", features = ["termination"] }
